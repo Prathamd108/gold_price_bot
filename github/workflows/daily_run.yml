@@ -2,8 +2,8 @@ name: Daily Gold Alert
 
 on:
   schedule:
-    - cron: '30 3 * * *' # Runs at 09:00 AM IST
-  workflow_dispatch:      # Allows manual testing button
+    - cron: '30 3 * * *'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -25,4 +25,3 @@ jobs:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
         run: python agent.py
-        # Final check.
