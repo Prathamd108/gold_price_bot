@@ -5,15 +5,21 @@ on:
     - cron: '30 3 * * *'
 
 jobs:
-  run-bot:
+  run_agent_job:  # <--- Renamed job to match purpose, use underscores
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
           python-version: '3.9'
-      - run: pip install yfinance requests
-      - env:
+          
+      - name: Install Libraries
+        run: pip install yfinance requests
+
+      - name: Run Python Agent
+        env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           CHAT_ID: ${{ secrets.CHAT_ID }}
         run: python agent.py
