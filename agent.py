@@ -1,16 +1,16 @@
-import os  # <--- Added this to talk to the Cloud
+import os
 import yfinance as yf
 import requests
 import datetime
 
 # --- CONFIGURATION (SECURE MODE) ---
-# We do NOT paste keys here. We ask GitHub for them.
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 CHAT_ID = os.environ.get("CHAT_ID")
 
 # Safety Check: Stop if keys are missing
 if not TELEGRAM_TOKEN or not CHAT_ID:
-    raise ValueError("❌ FATAL ERROR: Secrets not found. Did you add them in GitHub Settings?")
+    # This error will show in the GitHub Actions log if the secrets are missing
+    raise ValueError("❌ FATAL ERROR: Secrets not found in environment!")
 # -----------------------------------
 
 def send_telegram_alert(message):
@@ -22,6 +22,7 @@ def send_telegram_alert(message):
         "parse_mode": "Markdown"
     }
     try:
+        # NOTE: If this fails, the token/chat_id is likely wrong.
         requests.post(url, json=payload)
         print("📨 Message sent to Telegram!")
     except Exception as e:
@@ -29,6 +30,12 @@ def send_telegram_alert(message):
 
 def run_agent():
     print("\n🚀 AGENT ACTIVE: Checking Markets...")
+    
+    # --- DEBUGGING STEP ---
+    # This prints the first 5 chars of the token and the full chat ID to the log
+    print(f"🔑 DEBUG: Bot Token Prefix: {TELEGRAM_TOKEN[:5]}***")
+    print(f"🆔 DEBUG: Chat ID Used: {CHAT_ID}")
+    # ----------------------
     
     # 1. FETCH DATA
     try:
@@ -64,7 +71,7 @@ def run_agent():
         """
         
         # 3. DELIVERY
-        print(msg) 
+        print(msg)
         send_telegram_alert(msg) 
         
     except Exception as e:
